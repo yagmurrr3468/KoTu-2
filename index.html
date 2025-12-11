@@ -1,0 +1,1727 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>KoTü | Intelligenter Kleiderschrank</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary: #0a0a14;
+            --secondary: #1a1a2e;
+            --accent: #d4af37;
+            --accent-dark: #b8941f;
+            --light: #f8f8f8;
+            --gray: #6c757d;
+            --text: #2d2d2d;
+            --white: #ffffff;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background-color: var(--white);
+            color: var(--text);
+            line-height: 1.6;
+        }
+        
+        .container {
+            width: 90%;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+        
+        .btn {
+            display: inline-block;
+            background-color: var(--accent);
+            color: var(--primary);
+            padding: 12px 25px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            font-size: 14px;
+        }
+        
+        .btn:hover {
+            background-color: var(--accent-dark);
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(212, 175, 55, 0.3);
+        }
+        
+        header {
+            background-color: var(--primary);
+            color: var(--white);
+            padding: 10px 0;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+        
+        .header-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .logo-container {
+            display: flex;
+            align-items: center;
+            padding: 10px 0;
+        }
+        
+        .logo-img {
+            height: 130px;
+            border-radius: 8px;
+            transition: transform 0.3s ease;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+        }
+        
+        .logo-img:hover {
+            transform: scale(1.05);
+        }
+        
+        nav {
+            display: flex;
+            align-items: center;
+        }
+        
+        nav ul {
+            display: flex;
+            list-style: none;
+            margin-right: 20px;
+        }
+        
+        nav ul li {
+            margin-left: 25px;
+        }
+        
+        nav ul li a {
+            color: var(--white);
+            text-decoration: none;
+            font-weight: 500;
+            transition: color 0.3s;
+            font-size: 16px;
+            position: relative;
+        }
+        
+        nav ul li a:after {
+            content: '';
+            position: absolute;
+            width: 0;
+            height: 2px;
+            bottom: -5px;
+            left: 0;
+            background-color: var(--accent);
+            transition: width 0.3s;
+        }
+        
+        nav ul li a:hover {
+            color: var(--accent);
+        }
+        
+        nav ul li a:hover:after {
+            width: 100%;
+        }
+        
+        .language-switcher {
+            position: relative;
+            display: inline-block;
+        }
+        
+        .language-btn {
+            background: rgba(255, 255, 255, 0.1);
+            color: var(--white);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            padding: 8px 15px;
+            border-radius: 4px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            font-size: 14px;
+            transition: all 0.3s ease;
+        }
+        
+        .language-btn:hover {
+            background: rgba(255, 255, 255, 0.2);
+        }
+        
+        .language-btn i {
+            margin-right: 8px;
+        }
+        
+        .language-dropdown {
+            display: none;
+            position: absolute;
+            top: 100%;
+            right: 0;
+            background-color: var(--white);
+            min-width: 120px;
+            box-shadow: 0 8px 16px rgba(0,0,0,0.1);
+            border-radius: 4px;
+            overflow: hidden;
+            z-index: 1001;
+        }
+        
+        .language-dropdown a {
+            color: var(--text);
+            padding: 10px 15px;
+            text-decoration: none;
+            display: block;
+            transition: background-color 0.3s;
+            font-size: 14px;
+            cursor: pointer;
+        }
+        
+        .language-dropdown a:hover {
+            background-color: var(--light);
+        }
+        
+        .language-dropdown a.active {
+            background-color: var(--accent);
+            color: var(--primary);
+            font-weight: 600;
+        }
+        
+        .language-switcher.active .language-dropdown {
+            display: block;
+        }
+        
+        .hero {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+            color: var(--white);
+            padding: 120px 0;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .hero:before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1440 320"><path fill="%23d4af37" fill-opacity="0.05" d="M0,96L48,112C96,128,192,160,288,186.7C384,213,480,235,576,213.3C672,192,768,128,864,128C960,128,1056,192,1152,208C1248,224,1344,192,1392,176L1440,160L1440,320L1392,320C1344,320,1248,320,1152,320C1056,320,960,320,864,320C768,320,672,320,576,320C480,320,384,320,288,320C192,320,96,320,48,320L0,320Z"></path></svg>');
+            background-size: cover;
+            background-position: center;
+        }
+        
+        .hero .container {
+            position: relative;
+            z-index: 1;
+        }
+        
+        .hero h1 {
+            font-size: 48px;
+            margin-bottom: 20px;
+        }
+        
+        .hero p {
+            font-size: 18px;
+            max-width: 700px;
+            margin: 0 auto 30px;
+            opacity: 0.9;
+        }
+        
+        section {
+            padding: 80px 0;
+        }
+        
+        .section-title {
+            text-align: center;
+            margin-bottom: 50px;
+        }
+        
+        .section-title h2 {
+            font-size: 36px;
+            margin-bottom: 15px;
+            position: relative;
+            display: inline-block;
+        }
+        
+        .section-title h2:after {
+            content: '';
+            position: absolute;
+            width: 70px;
+            height: 3px;
+            background-color: var(--accent);
+            bottom: -10px;
+            left: 50%;
+            transform: translateX(-50%);
+        }
+        
+        .section-title p {
+            color: var(--gray);
+            font-size: 18px;
+            max-width: 700px;
+            margin: 0 auto;
+        }
+        
+        .products {
+            background-color: var(--light);
+        }
+        
+        .products-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 40px;
+        }
+        
+        .product-card {
+            background-color: var(--white);
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+            transition: transform 0.3s, box-shadow 0.3s;
+            position: relative;
+        }
+        
+        .product-card:before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, var(--accent) 0%, var(--accent-dark) 100%);
+        }
+        
+        .product-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.15);
+        }
+        
+        .product-images {
+            display: flex;
+            height: 200px;
+        }
+        
+        .product-image {
+            flex: 1;
+            overflow: hidden;
+        }
+        
+        .product-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.5s;
+        }
+        
+        .product-card:hover .product-image img {
+            transform: scale(1.05);
+        }
+        
+        .product-info {
+            padding: 25px;
+        }
+        
+        .product-info h3 {
+            font-size: 24px;
+            margin-bottom: 10px;
+            color: var(--primary);
+        }
+        
+        .product-info p {
+            color: var(--gray);
+            margin-bottom: 20px;
+            font-size: 15px;
+        }
+        
+        .product-features {
+            margin-bottom: 20px;
+        }
+        
+        .product-features span {
+            display: block;
+            margin-bottom: 8px;
+            font-size: 14px;
+        }
+        
+        .product-features i {
+            color: var(--accent);
+            margin-right: 8px;
+        }
+        
+        .product-price {
+            font-size: 28px;
+            font-weight: 700;
+            color: var(--accent);
+            margin-bottom: 20px;
+            text-align: center;
+            padding: 10px;
+            background-color: var(--light);
+            border-radius: 4px;
+        }
+        
+        .features {
+            background-color: var(--white);
+        }
+        
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+        }
+        
+        .feature {
+            text-align: center;
+            padding: 30px;
+            background-color: var(--light);
+            border-radius: 8px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+            transition: transform 0.3s;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .feature:before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background-color: var(--accent);
+        }
+        
+        .feature:hover {
+            transform: translateY(-5px);
+        }
+        
+        .feature-icon {
+            font-size: 40px;
+            color: var(--accent);
+            margin-bottom: 20px;
+        }
+        
+        .feature h3 {
+            margin-bottom: 15px;
+            font-size: 22px;
+        }
+        
+        .feature p {
+            color: var(--gray);
+        }
+        
+        .how-it-works {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+            color: var(--white);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .how-it-works:before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1440 320"><path fill="%23ffffff" fill-opacity="0.05" d="M0,96L48,112C96,128,192,160,288,186.7C384,213,480,235,576,213.3C672,192,768,128,864,128C960,128,1056,192,1152,208C1248,224,1344,192,1392,176L1440,160L1440,320L1392,320C1344,320,1248,320,1152,320C1056,320,960,320,864,320C768,320,672,320,576,320C480,320,384,320,288,320C192,320,96,320,48,320L0,320Z"></path></svg>');
+            background-size: cover;
+            background-position: center;
+        }
+        
+        .how-it-works .container {
+            position: relative;
+            z-index: 1;
+        }
+        
+        .steps {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 30px;
+        }
+        
+        .step {
+            text-align: center;
+            padding: 30px;
+            background-color: rgba(255, 255, 255, 0.1);
+            border-radius: 8px;
+            transition: transform 0.3s;
+            backdrop-filter: blur(5px);
+        }
+        
+        .step:hover {
+            transform: translateY(-5px);
+        }
+        
+        .step-number {
+            width: 50px;
+            height: 50px;
+            background-color: var(--accent);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 20px;
+            font-size: 24px;
+            font-weight: bold;
+            color: var(--primary);
+        }
+        
+        .testimonials {
+            background-color: var(--light);
+        }
+        
+        .testimonial-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+        }
+        
+        .testimonial {
+            background-color: var(--white);
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+            position: relative;
+        }
+        
+        .testimonial:before {
+            content: '"';
+            position: absolute;
+            top: 10px;
+            left: 15px;
+            font-size: 60px;
+            color: var(--accent);
+            opacity: 0.2;
+            font-family: Georgia, serif;
+            line-height: 1;
+        }
+        
+        .testimonial-text {
+            font-style: italic;
+            margin-bottom: 20px;
+            line-height: 1.7;
+        }
+        
+        .testimonial-author {
+            display: flex;
+            align-items: center;
+        }
+        
+        .author-avatar {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background-color: var(--accent);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 15px;
+            font-weight: bold;
+            color: var(--primary);
+        }
+        
+        .author-info h4 {
+            margin-bottom: 5px;
+        }
+        
+        .author-info p {
+            color: var(--gray);
+            font-size: 14px;
+        }
+        
+        .cta {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+            color: var(--white);
+            text-align: center;
+            padding: 80px 0;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .cta:before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1440 320"><path fill="%23d4af37" fill-opacity="0.05" d="M0,96L48,112C96,128,192,160,288,186.7C384,213,480,235,576,213.3C672,192,768,128,864,128C960,128,1056,192,1152,208C1248,224,1344,192,1392,176L1440,160L1440,320L1392,320C1344,320,1248,320,1152,320C1056,320,960,320,864,320C768,320,672,320,576,320C480,320,384,320,288,320C192,320,96,320,48,320L0,320Z"></path></svg>');
+            background-size: cover;
+            background-position: center;
+        }
+        
+        .cta .container {
+            position: relative;
+            z-index: 1;
+        }
+        
+        .cta h2 {
+            font-size: 36px;
+            margin-bottom: 20px;
+        }
+        
+        .cta p {
+            font-size: 18px;
+            margin-bottom: 30px;
+            max-width: 700px;
+            margin-left: auto;
+            margin-right: auto;
+            opacity: 0.9;
+        }
+        
+        footer {
+            background-color: var(--primary);
+            color: var(--white);
+            padding: 60px 0 20px;
+        }
+        
+        .footer-content {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 40px;
+            margin-bottom: 40px;
+        }
+        
+        .footer-column h3 {
+            margin-bottom: 20px;
+            position: relative;
+            padding-bottom: 10px;
+        }
+        
+        .footer-column h3:after {
+            content: '';
+            position: absolute;
+            width: 40px;
+            height: 2px;
+            background-color: var(--accent);
+            bottom: 0;
+            left: 0;
+        }
+        
+        .footer-links {
+            list-style: none;
+        }
+        
+        .footer-links li {
+            margin-bottom: 10px;
+        }
+        
+        .footer-links a {
+            color: #ccc;
+            text-decoration: none;
+            transition: color 0.3s;
+        }
+        
+        .footer-links a:hover {
+            color: var(--accent);
+        }
+        
+        .social-icons {
+            display: flex;
+            margin-top: 15px;
+        }
+        
+        .social-icons a {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 36px;
+            height: 36px;
+            background-color: rgba(255, 255, 255, 0.1);
+            border-radius: 50%;
+            margin-right: 10px;
+            transition: background-color 0.3s;
+            color: white;
+            text-decoration: none;
+        }
+        
+        .social-icons a:hover {
+            background-color: var(--accent);
+        }
+        
+        .copyright {
+            text-align: center;
+            padding-top: 20px;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            color: #aaa;
+            font-size: 14px;
+        }
+        
+        .confirmation-message {
+            display: none;
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background-color: var(--white);
+            padding: 40px;
+            border-radius: 8px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+            text-align: center;
+            z-index: 1001;
+            max-width: 500px;
+            width: 90%;
+        }
+        
+        .confirmation-message h3 {
+            color: var(--accent);
+            margin-bottom: 15px;
+            font-size: 24px;
+        }
+        
+        .confirmation-message p {
+            margin-bottom: 20px;
+            color: var(--text);
+        }
+        
+        .overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.7);
+            z-index: 1000;
+        }
+        
+        /* Werbevideo Stile - VERGRÖSSERT */
+        .video-ad-container {
+            position: fixed;
+            bottom: 120px;
+            right: 20px;
+            width: 450px;
+            background-color: var(--primary);
+            border-radius: 12px;
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.4);
+            overflow: hidden;
+            z-index: 999;
+            display: none;
+            transition: transform 0.3s ease, opacity 0.3s ease;
+            opacity: 0;
+            transform: translateY(20px);
+            border: 3px solid var(--accent);
+        }
+        
+        .video-ad-container.show {
+            display: block;
+            opacity: 1;
+            transform: translateY(0);
+        }
+        
+        .video-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px 20px;
+            background-color: var(--secondary);
+            color: var(--white);
+            font-weight: 700;
+            font-size: 18px;
+        }
+        
+        .close-video-btn {
+            background: none;
+            border: none;
+            color: var(--white);
+            cursor: pointer;
+            font-size: 22px;
+            transition: color 0.3s;
+            width: 32px;
+            height: 32px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+        }
+        
+        .close-video-btn:hover {
+            color: var(--accent);
+            background-color: rgba(255, 255, 255, 0.1);
+        }
+        
+        .ad-video {
+            width: 100%;
+            height: 280px;
+            object-fit: cover;
+            background-color: #000;
+            display: block;
+        }
+        
+        .video-controls {
+            display: flex;
+            background-color: var(--secondary);
+            padding: 12px 20px;
+        }
+        
+        .video-control-btn {
+            background-color: rgba(255, 255, 255, 0.15);
+            border: none;
+            color: var(--white);
+            width: 44px;
+            height: 44px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            margin-right: 15px;
+            transition: all 0.3s;
+            font-size: 18px;
+        }
+        
+        .video-control-btn:hover {
+            background-color: var(--accent);
+            color: var(--primary);
+            transform: scale(1.1);
+        }
+        
+        .video-toggle-btn {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            background-color: var(--accent);
+            color: var(--primary);
+            border: none;
+            border-radius: 60px;
+            padding: 18px 30px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            font-weight: 700;
+            z-index: 998;
+            box-shadow: 0 8px 25px rgba(212, 175, 55, 0.4);
+            transition: all 0.3s ease;
+            font-size: 18px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        
+        .video-toggle-btn:hover {
+            background-color: var(--accent-dark);
+            transform: translateY(-5px) scale(1.05);
+            box-shadow: 0 12px 30px rgba(212, 175, 55, 0.6);
+        }
+        
+        .video-toggle-btn i {
+            margin-right: 12px;
+            font-size: 24px;
+        }
+        
+        /* Video Overlay für bessere Sichtbarkeit */
+        .video-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(180deg, rgba(0,0,0,0.2) 0%, rgba(0,0,0,0) 100%);
+            pointer-events: none;
+        }
+        
+        @media (max-width: 768px) {
+            .header-content {
+                flex-direction: column;
+            }
+            
+            nav {
+                width: 100%;
+                justify-content: space-between;
+                margin-top: 15px;
+            }
+            
+            nav ul {
+                margin-right: 0;
+            }
+            
+            .hero h1 {
+                font-size: 36px;
+            }
+            
+            .hero p {
+                font-size: 16px;
+            }
+            
+            .section-title h2 {
+                font-size: 28px;
+            }
+            
+            .product-images {
+                flex-direction: column;
+                height: auto;
+            }
+            
+            .product-image {
+                height: 200px;
+            }
+            
+            .logo-img {
+                height: 100px;
+            }
+            
+            .video-ad-container {
+                width: 380px;
+                bottom: 100px;
+                right: 15px;
+            }
+            
+            .ad-video {
+                height: 220px;
+            }
+            
+            .video-toggle-btn {
+                bottom: 20px;
+                right: 20px;
+                padding: 15px 25px;
+                font-size: 16px;
+            }
+            
+            .video-toggle-btn i {
+                font-size: 20px;
+                margin-right: 10px;
+            }
+        }
+        
+        @media (max-width: 576px) {
+            nav ul {
+                flex-direction: column;
+                align-items: center;
+                width: 100%;
+            }
+            
+            nav ul li {
+                margin: 10px 0;
+            }
+            
+            .logo-container {
+                flex-direction: column;
+                text-align: center;
+            }
+            
+            .logo-img {
+                margin-bottom: 10px;
+                height: 90px;
+            }
+            
+            .language-switcher {
+                margin-top: 10px;
+            }
+            
+            .video-ad-container {
+                width: calc(100% - 40px);
+                right: 20px;
+                left: 20px;
+                bottom: 100px;
+                max-width: 380px;
+                margin: 0 auto;
+            }
+            
+            .video-toggle-btn {
+                bottom: 15px;
+                right: 15px;
+                padding: 14px 22px;
+                font-size: 15px;
+            }
+        }
+        
+        @media (max-width: 400px) {
+            .video-ad-container {
+                width: calc(100% - 30px);
+                right: 15px;
+                left: 15px;
+            }
+            
+            .ad-video {
+                height: 200px;
+            }
+            
+            .video-toggle-btn {
+                padding: 12px 20px;
+                font-size: 14px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="overlay" id="overlay"></div>
+    
+    <div class="confirmation-message" id="confirmationMessage">
+        <h3 id="confirmationTitle">Bestellung erfolgreich!</h3>
+        <p id="confirmationText">Vielen Dank für Ihre Bestellung bei KoTü. Wir werden uns innerhalb von 24 Stunden mit Ihnen in Verbindung setzen.</p>
+        <button class="btn" id="closeConfirmation">Schließen</button>
+    </div>
+
+    <header>
+        <div class="container">
+            <div class="header-content">
+                <div class="logo-container">
+                    <img src="https://i.ibb.co/7NkR8jPs/IMG-3055.jpg" alt="KoTü Logo" class="logo-img">
+                </div>
+                <nav>
+                    <ul>
+                        <li><a href="#products" data-i18n="nav.models">Modelle</a></li>
+                        <li><a href="#features" data-i18n="nav.features">Funktionen</a></li>
+                        <li><a href="#how-it-works" data-i18n="nav.howitworks">So funktioniert's</a></li>
+                        <li><a href="#testimonials" data-i18n="nav.testimonials">Kundenstimmen</a></li>
+                    </ul>
+                    <div class="language-switcher" id="languageSwitcher">
+                        <button class="language-btn">
+                            <i class="fas fa-globe"></i> <span id="currentLang">DE</span>
+                        </button>
+                        <div class="language-dropdown">
+                            <a class="active" data-lang="de">Deutsch</a>
+                            <a data-lang="en">English</a>
+                            <a data-lang="tr">Türkçe</a>
+                        </div>
+                    </div>
+                </nav>
+            </div>
+        </div>
+    </header>
+
+    <section class="hero">
+        <div class="container">
+            <h1 data-i18n="hero.title">KoTü – Der intelligente Kleiderschrank</h1>
+            <p data-i18n="hero.subtitle">Der erste KI-gestützte Kleiderschrank, der mit dir spricht, deinen Stil kennt und perfekte Outfits für jeden Anlass vorschlägt.</p>
+            <a href="#products" class="btn" data-i18n="hero.button">Modelle entdecken</a>
+        </div>
+    </section>
+
+    <section class="products" id="products">
+        <div class="container">
+            <div class="section-title">
+                <h2 data-i18n="products.title">Unsere Modelle</h2>
+                <p data-i18n="products.subtitle">Wähle das perfekte KoTü Modell für dein Zuhause</p>
+            </div>
+            <div class="products-grid">
+                <div class="product-card">
+                    <div class="product-images">
+                        <div class="product-image">
+                            <img src="https://i.ibb.co/XZM2cNF5/IMG-3044.jpg" alt="KoTü Basic">
+                        </div>
+                        <div class="product-image">
+                            <img src="https://i.ibb.co/CstghHB2/IMG-3047.jpg" alt="KoTü Basic">
+                        </div>
+                    </div>
+                    <div class="product-info">
+                        <h3 data-i18n="products.basic.title">KoTü Basic</h3>
+                        <p data-i18n="products.basic.description">Der Einstieg in die Welt der intelligenten Kleiderschränke</p>
+                        <div class="product-features">
+                            <span><i class="fas fa-check"></i> <span data-i18n="products.basic.feature1">KI-Beratung</span></span>
+                            <span><i class="fas fa-check"></i> <span data-i18n="products.basic.feature2">Sprachsteuerung</span></span>
+                            <span><i class="fas fa-check"></i> <span data-i18n="products.basic.feature3">Wetteranalyse</span></span>
+                        </div>
+                        <div class="product-price">€ 2.499</div>
+                        <button class="btn order-btn" data-model="KoTü Basic" data-i18n="products.order">Jetzt bestellen</button>
+                    </div>
+                </div>
+
+                <div class="product-card">
+                    <div class="product-images">
+                        <div class="product-image">
+                            <img src="https://i.ibb.co/ZzMTcGM2/IMG-3045.jpg" alt="KoTü VIP">
+                        </div>
+                        <div class="product-image">
+                            <img src="https://i.ibb.co/tPBjbpf5/IMG-3048.jpg" alt="KoTü VIP">
+                        </div>
+                    </div>
+                    <div class="product-info">
+                        <h3 data-i18n="products.vip.title">KoTü VIP</h3>
+                        <p data-i18n="products.vip.description">Erweiterte Funktionen für anspruchsvolle Nutzer</p>
+                        <div class="product-features">
+                            <span><i class="fas fa-check"></i> <span data-i18n="products.vip.feature1">Alle Basic-Features</span></span>
+                            <span><i class="fas fa-check"></i> <span data-i18n="products.vip.feature2">Kalender-Integration</span></span>
+                            <span><i class="fas fa-check"></i> <span data-i18n="products.vip.feature3">Stil-Analyse</span></span>
+                            <span><i class="fas fa-check"></i> <span data-i18n="products.vip.feature4">Automatische Inventur</span></span>
+                        </div>
+                        <div class="product-price">€ 3.299</div>
+                        <button class="btn order-btn" data-model="KoTü VIP" data-i18n="products.order">Jetzt bestellen</button>
+                    </div>
+                </div>
+
+                <div class="product-card">
+                    <div class="product-images">
+                        <div class="product-image">
+                            <img src="https://i.ibb.co/0jc2hbXT/IMG-3046.jpg" alt="KoTü Premium">
+                        </div>
+                        <div class="product-image">
+                            <img src="https://i.ibb.co/Nf70frW/IMG-3049.jpg" alt="KoTü Premium">
+                        </div>
+                    </div>
+                    <div class="product-info">
+                        <h3 data-i18n="products.premium.title">KoTü Premium</h3>
+                        <p data-i18n="products.premium.description">Das ultimative Erlebnis mit allen Funktionen</p>
+                        <div class="product-features">
+                            <span><i class="fas fa-check"></i> <span data-i18n="products.premium.feature1">Alle VIP-Features</span></span>
+                            <span><i class="fas fa-check"></i> <span data-i18n="products.premium.feature2">Personalisierte KI</span></span>
+                            <span><i class="fas fa-check"></i> <span data-i18n="products.premium.feature3">Premium Materialien</span></span>
+                            <span><i class="fas fa-check"></i> <span data-i18n="products.premium.feature4">24/7 Premium Support</span></span>
+                            <span><i class="fas fa-check"></i> <span data-i18n="products.premium.feature5">5 Jahre Garantie</span></span>
+                        </div>
+                        <div class="product-price">€ 4.499</div>
+                        <button class="btn order-btn" data-model="KoTü Premium" data-i18n="products.order">Jetzt bestellen</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="features" id="features">
+        <div class="container">
+            <div class="section-title">
+                <h2 data-i18n="features.title">Revolutionäre Funktionen</h2>
+                <p data-i18n="features.subtitle">Entdecke die innovativen Technologien, die KoTü zum intelligentesten Kleiderschrank der Welt machen</p>
+            </div>
+            <div class="features-grid">
+                <div class="feature">
+                    <div class="feature-icon">
+                        <i class="fas fa-robot"></i>
+                    </div>
+                    <h3 data-i18n="features.ki.title">KI-gestützte Beratung</h3>
+                    <p data-i18n="features.ki.description">Unsere KI analysiert deine Kleidung, Vorlieben und das Wetter für perfekte Outfit-Vorschläge.</p>
+                </div>
+                <div class="feature">
+                    <div class="feature-icon">
+                        <i class="fas fa-microphone"></i>
+                    </div>
+                    <h3 data-i18n="features.voice.title">Sprachsteuerung</h3>
+                    <p data-i18n="features.voice.description">Steuere deinen Kleiderschrank ganz einfach per Sprachbefehl.</p>
+                </div>
+                <div class="feature">
+                    <div class="feature-icon">
+                        <i class="fas fa-cloud-sun"></i>
+                    </div>
+                    <h3 data-i18n="features.weather.title">Wetteranalyse</h3>
+                    <p data-i18n="features.weather.description">KoTü checkt automatisch das Wetter und schlägt passende Kleidung vor.</p>
+                </div>
+                <div class="feature">
+                    <div class="feature-icon">
+                        <i class="fas fa-magic"></i>
+                    </div>
+                    <h3 data-i18n="features.style.title">Stilanalyse</h3>
+                    <p data-i18n="features.style.description">Der Spiegel mit Kamera analysiert deine Figur für perfekte Passform.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="how-it-works" id="how-it-works">
+        <div class="container">
+            <div class="section-title">
+                <h2 data-i18n="howitworks.title">So funktioniert's</h2>
+                <p data-i18n="howitworks.subtitle">In vier einfachen Schritten zu deinem perfekten Outfit</p>
+            </div>
+            <div class="steps">
+                <div class="step">
+                    <div class="step-number">1</div>
+                    <h3 data-i18n="howitworks.step1.title">Vor den Schrank stellen</h3>
+                    <p data-i18n="howitworks.step1.description">Stelle dich vor den Spiegel. Die Kamera erkennt dich und begrüßt dich.</p>
+                </div>
+                <div class="step">
+                    <div class="step-number">2</div>
+                    <h3 data-i18n="howitworks.step2.title">KI-Analyse</h3>
+                    <p data-i18n="howitworks.step2.description">Die KI analysiert deine Kleidung, Vorlieben und das Wetter.</p>
+                </div>
+                <div class="step">
+                    <div class="step-number">3</div>
+                    <h3 data-i18n="howitworks.step3.title">Outfit-Vorschläge</h3>
+                    <p data-i18n="howitworks.step3.description">KoTü präsentiert dir 3 perfekte Outfit-Vorschläge.</p>
+                </div>
+                <div class="step">
+                    <div class="step-number">4</div>
+                    <h3 data-i18n="howitworks.step4.title">Auswählen und loslegen</h3>
+                    <p data-i18n="howitworks.step4.description">Wähle dein Lieblingsoutfit und starte perfekt angezogen in den Tag.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="testimonials" id="testimonials">
+        <div class="container">
+            <div class="section-title">
+                <h2 data-i18n="testimonials.title">Kundenstimmen</h2>
+                <p data-i18n="testimonials.subtitle">Erfahrungsberichte von zufriedenen KoTü-Nutzern</p>
+            </div>
+            <div class="testimonial-grid">
+                <div class="testimonial">
+                    <div class="testimonial-text" data-i18n="testimonials.testimonial1.text">"KoTü hat mein Leben verändert! Ich spare so viel Zeit morgens und sehe immer perfekt aus."</div>
+                    <div class="testimonial-author">
+                        <div class="author-avatar">SM</div>
+                        <div class="author-info">
+                            <h4 data-i18n="testimonials.testimonial1.name">Sarah Müller</h4>
+                            <p data-i18n="testimonials.testimonial1.location">Berlin</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="testimonial">
+                    <div class="testimonial-text" data-i18n="testimonials.testimonial2.text">"Als Geschäftsmann muss ich immer passend gekleidet sein. KoTü schlägt immer das richtige Outfit vor."</div>
+                    <div class="testimonial-author">
+                        <div class="author-avatar">TW</div>
+                        <div class="author-info">
+                            <h4 data-i18n="testimonials.testimonial2.name">Thomas Wagner</h4>
+                            <p data-i18n="testimonials.testimonial2.location">München</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="testimonial">
+                    <div class="testimonial-text" data-i18n="testimonials.testimonial3.text">"Die Wetterfunktion ist ein Game-Changer! Nie wieder zu dünn oder zu dick angezogen."</div>
+                    <div class="testimonial-author">
+                        <div class="author-avatar">JM</div>
+                        <div class="author-info">
+                            <h4 data-i18n="testimonials.testimonial3.name">Julia Meyer</h4>
+                            <p data-i18n="testimonials.testimonial3.location">Hamburg</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="cta">
+        <div class="container">
+            <h2 data-i18n="cta.title">Bereit für deinen intelligenten Kleiderschrank?</h2>
+            <p data-i18n="cta.subtitle">Entdecke KoTü und erlebe die Zukunft der Kleidungsauswahl. Spare Zeit und siehe immer perfekt aus.</p>
+            <button class="btn order-btn" data-model="KoTü Beratung" data-i18n="cta.button">Jetzt bestellen</button>
+        </div>
+    </section>
+
+    <footer>
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-column">
+                    <h3 data-i18n="footer.about.title">KoTü</h3>
+                    <p data-i18n="footer.about.description">Der intelligente Kleiderschrank, der mit dir spricht und dir hilft, immer perfekt angezogen zu sein.</p>
+                    <div class="social-icons">
+                        <a href="#"><i class="fab fa-facebook-f"></i></a>
+                        <a href="#"><i class="fab fa-instagram"></i></a>
+                        <a href="#"><i class="fab fa-twitter"></i></a>
+                    </div>
+                </div>
+                <div class="footer-column">
+                    <h3 data-i18n="footer.links.title">Quick Links</h3>
+                    <ul class="footer-links">
+                        <li><a href="#products" data-i18n="nav.models">Modelle</a></li>
+                        <li><a href="#features" data-i18n="nav.features">Funktionen</a></li>
+                        <li><a href="#how-it-works" data-i18n="nav.howitworks">So funktioniert's</a></li>
+                        <li><a href="#testimonials" data-i18n="nav.testimonials">Kundenstimmen</a></li>
+                    </ul>
+                </div>
+                <div class="footer-column">
+                    <h3 data-i18n="footer.contact.title">Kontakt</h3>
+                    <ul class="footer-links">
+                        <li><i class="fas fa-envelope"></i> info@kotue.com</li>
+                        <li><i class="fas fa-phone"></i> +49 (0) 30 12345678</li>
+                        <li><i class="fas fa-map-marker-alt"></i> <span data-i18n="footer.contact.address">Berlin, Deutschland</span></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="copyright">
+                <p data-i18n="footer.copyright">&copy; 2023 KoTü. Alle Rechte vorbehalten.</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Werbevideo Container -->
+    <div class="video-ad-container" id="videoAdContainer">
+        <div class="video-header">
+            <span data-i18n="video.title">KoTü in Aktion</span>
+            <button class="close-video-btn" id="closeVideoBtn">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+        <video class="ad-video" id="adVideo" muted loop playsinline>
+            <!-- HIER DEIN VIDEO EINFÜGEN: Ersetze DEIN_VIDEO.mp4 mit deinem Dateinamen -->
+            <source src="ads.mp4" type="video/mp4">
+            <source src="DEIN_VIDEO.webm" type="video/webm">
+            Ihr Browser unterstützt das Video-Tag nicht.
+        </video>
+        <div class="video-overlay"></div>
+        <div class="video-controls">
+            <button class="video-control-btn" id="playPauseBtn">
+                <i class="fas fa-play" id="playIcon"></i>
+                <i class="fas fa-pause" id="pauseIcon" style="display: none;"></i>
+            </button>
+            <button class="video-control-btn" id="muteUnmuteBtn">
+                <i class="fas fa-volume-up" id="volumeIcon"></i>
+                <i class="fas fa-volume-mute" id="muteIcon" style="display: none;"></i>
+            </button>
+        </div>
+    </div>
+
+    <button class="video-toggle-btn" id="videoToggleBtn">
+        <i class="fas fa-video"></i>
+        <span data-i18n="video.toggle">Video ansehen</span>
+    </button>
+
+    <script>
+        const translations = {
+            de: {
+                "nav.models": "Modelle",
+                "nav.features": "Funktionen",
+                "nav.howitworks": "So funktioniert's",
+                "nav.testimonials": "Kundenstimmen",
+                "hero.title": "KoTü – Der intelligente Kleiderschrank",
+                "hero.subtitle": "Der erste KI-gestützte Kleiderschrank, der mit dir spricht, deinen Stil kennt und perfekte Outfits für jeden Anlass vorschlägt.",
+                "hero.button": "Modelle entdecken",
+                "products.title": "Unsere Modelle",
+                "products.subtitle": "Wähle das perfekte KoTü Modell für dein Zuhause",
+                "products.basic.title": "KoTü Basic",
+                "products.basic.description": "Der Einstieg in die Welt der intelligenten Kleiderschränke",
+                "products.basic.feature1": "KI-Beratung",
+                "products.basic.feature2": "Sprachsteuerung",
+                "products.basic.feature3": "Wetteranalyse",
+                "products.vip.title": "KoTü VIP",
+                "products.vip.description": "Erweiterte Funktionen für anspruchsvolle Nutzer",
+                "products.vip.feature1": "Alle Basic-Features",
+                "products.vip.feature2": "Kalender-Integration",
+                "products.vip.feature3": "Stil-Analyse",
+                "products.vip.feature4": "Automatische Inventur",
+                "products.premium.title": "KoTü Premium",
+                "products.premium.description": "Das ultimative Erlebnis mit allen Funktionen",
+                "products.premium.feature1": "Alle VIP-Features",
+                "products.premium.feature2": "Personalisierte KI",
+                "products.premium.feature3": "Premium Materialien",
+                "products.premium.feature4": "24/7 Premium Support",
+                "products.premium.feature5": "5 Jahre Garantie",
+                "products.order": "Jetzt bestellen",
+                "features.title": "Revolutionäre Funktionen",
+                "features.subtitle": "Entdecke die innovativen Technologien, die KoTü zum intelligentesten Kleiderschrank der Welt machen",
+                "features.ki.title": "KI-gestützte Beratung",
+                "features.ki.description": "Unsere KI analysiert deine Kleidung, Vorlieben und das Wetter für perfekte Outfit-Vorschläge.",
+                "features.voice.title": "Sprachsteuerung",
+                "features.voice.description": "Steuere deinen Kleiderschrank ganz einfach per Sprachbefehl.",
+                "features.weather.title": "Wetteranalyse",
+                "features.weather.description": "KoTü checkt automatisch das Wetter und schlägt passende Kleidung vor.",
+                "features.style.title": "Stilanalyse",
+                "features.style.description": "Der Spiegel mit Kamera analysiert deine Figur für perfekte Passform.",
+                "howitworks.title": "So funktioniert's",
+                "howitworks.subtitle": "In vier einfachen Schritten zu deinem perfekten Outfit",
+                "howitworks.step1.title": "Vor den Schrank stellen",
+                "howitworks.step1.description": "Stelle dich vor den Spiegel. Die Kamera erkennt dich und begrüßt dich.",
+                "howitworks.step2.title": "KI-Analyse",
+                "howitworks.step2.description": "Die KI analysiert deine Kleidung, Vorlieben und das Wetter.",
+                "howitworks.step3.title": "Outfit-Vorschläge",
+                "howitworks.step3.description": "KoTü präsentiert dir 3 perfekte Outfit-Vorschläge.",
+                "howitworks.step4.title": "Auswählen und loslegen",
+                "howitworks.step4.description": "Wähle dein Lieblingsoutfit und starte perfekt angezogen in den Tag.",
+                "testimonials.title": "Kundenstimmen",
+                "testimonials.subtitle": "Erfahrungsberichte von zufriedenen KoTü-Nutzern",
+                "testimonials.testimonial1.text": "KoTü hat mein Leben verändert! Ich spare so viel Zeit morgens und sehe immer perfekt aus.",
+                "testimonials.testimonial1.name": "Sarah Müller",
+                "testimonials.testimonial1.location": "Berlin",
+                "testimonials.testimonial2.text": "Als Geschäftsmann muss ich immer passend gekleidet sein. KoTü schlägt immer das richtige Outfit vor.",
+                "testimonials.testimonial2.name": "Thomas Wagner",
+                "testimonials.testimonial2.location": "München",
+                "testimonials.testimonial3.text": "Die Wetterfunktion ist ein Game-Changer! Nie wieder zu dünn oder zu dick angezogen.",
+                "testimonials.testimonial3.name": "Julia Meyer",
+                "testimonials.testimonial3.location": "Hamburg",
+                "cta.title": "Bereit für deinen intelligenten Kleiderschrank?",
+                "cta.subtitle": "Entdecke KoTü und erlebe die Zukunft der Kleidungsauswahl. Spare Zeit und siehe immer perfekt aus.",
+                "cta.button": "Jetzt bestellen",
+                "footer.about.title": "KoTü",
+                "footer.about.description": "Der intelligente Kleiderschrank, der mit dir spricht und dir hilft, immer perfekt angezogen zu sein.",
+                "footer.links.title": "Quick Links",
+                "footer.contact.title": "Kontakt",
+                "footer.contact.address": "Berlin, Deutschland",
+                "footer.copyright": "© 2023 KoTü. Alle Rechte vorbehalten.",
+                "confirmation.title": "Bestellung erfolgreich!",
+                "confirmation.text": "Vielen Dank für Ihre Bestellung bei KoTü. Wir werden uns innerhalb von 24 Stunden mit Ihnen in Verbindung setzen.",
+                "close": "Schließen",
+                "video.title": "KoTü in Aktion",
+                "video.toggle": "Video ansehen"
+            },
+            en: {
+                "nav.models": "Models",
+                "nav.features": "Features",
+                "nav.howitworks": "How it works",
+                "nav.testimonials": "Testimonials",
+                "hero.title": "KoTü – The Intelligent Wardrobe",
+                "hero.subtitle": "The first AI-powered wardrobe that talks to you, knows your style and suggests perfect outfits for every occasion.",
+                "hero.button": "Discover Models",
+                "products.title": "Our Models",
+                "products.subtitle": "Choose the perfect KoTü model for your home",
+                "products.basic.title": "KoTü Basic",
+                "products.basic.description": "Entry into the world of intelligent wardrobes",
+                "products.basic.feature1": "AI Consultation",
+                "products.basic.feature2": "Voice Control",
+                "products.basic.feature3": "Weather Analysis",
+                "products.vip.title": "KoTü VIP",
+                "products.vip.description": "Extended features for demanding users",
+                "products.vip.feature1": "All Basic Features",
+                "products.vip.feature2": "Calendar Integration",
+                "products.vip.feature3": "Style Analysis",
+                "products.vip.feature4": "Automatic Inventory",
+                "products.premium.title": "KoTü Premium",
+                "products.premium.description": "The ultimate experience with all features",
+                "products.premium.feature1": "All VIP Features",
+                "products.premium.feature2": "Personalized AI",
+                "products.premium.feature3": "Premium Materials",
+                "products.premium.feature4": "24/7 Premium Support",
+                "products.premium.feature5": "5 Year Warranty",
+                "products.order": "Order Now",
+                "features.title": "Revolutionary Features",
+                "features.subtitle": "Discover the innovative technologies that make KoTü the smartest wardrobe in the world",
+                "features.ki.title": "AI-Powered Consultation",
+                "features.ki.description": "Our AI analyzes your clothing, preferences and weather for perfect outfit suggestions.",
+                "features.voice.title": "Voice Control",
+                "features.voice.description": "Control your wardrobe easily with voice commands.",
+                "features.weather.title": "Weather Analysis",
+                "features.weather.description": "KoTü automatically checks the weather and suggests appropriate clothing.",
+                "features.style.title": "Style Analysis",
+                "features.style.description": "The mirror with camera analyzes your figure for perfect fit.",
+                "howitworks.title": "How it works",
+                "howitworks.subtitle": "In four simple steps to your perfect outfit",
+                "howitworks.step1.title": "Stand in front of the wardrobe",
+                "howitworks.step1.description": "Stand in front of the mirror. The camera recognizes you and greets you.",
+                "howitworks.step2.title": "AI Analysis",
+                "howitworks.step2.description": "The AI analyzes your clothing, preferences and the weather.",
+                "howitworks.step3.title": "Outfit Suggestions",
+                "howitworks.step3.description": "KoTü presents you with 3 perfect outfit suggestions.",
+                "howitworks.step4.title": "Select and go",
+                "howitworks.step4.description": "Choose your favorite outfit and start your day perfectly dressed.",
+                "testimonials.title": "Customer Reviews",
+                "testimonials.subtitle": "Experiences from satisfied KoTü users",
+                "testimonials.testimonial1.text": "KoTü has changed my life! I save so much time in the morning and always look perfect.",
+                "testimonials.testimonial1.name": "Sarah Miller",
+                "testimonials.testimonial1.location": "Berlin",
+                "testimonials.testimonial2.text": "As a businessman, I always need to be properly dressed. KoTü always suggests the right outfit.",
+                "testimonials.testimonial2.name": "Thomas Wagner",
+                "testimonials.testimonial2.location": "Munich",
+                "testimonials.testimonial3.text": "The weather function is a game-changer! Never too thin or too thick dressed again.",
+                "testimonials.testimonial3.name": "Julia Meyer",
+                "testimonials.testimonial3.location": "Hamburg",
+                "cta.title": "Ready for your intelligent wardrobe?",
+                "cta.subtitle": "Discover KoTü and experience the future of clothing selection. Save time and always look perfect.",
+                "cta.button": "Order Now",
+                "footer.about.title": "KoTü",
+                "footer.about.description": "The intelligent wardrobe that talks to you and helps you always be perfectly dressed.",
+                "footer.links.title": "Quick Links",
+                "footer.contact.title": "Contact",
+                "footer.contact.address": "Berlin, Germany",
+                "footer.copyright": "© 2023 KoTü. All rights reserved.",
+                "confirmation.title": "Order successful!",
+                "confirmation.text": "Thank you for your order at KoTü. We will contact you within 24 hours.",
+                "close": "Close",
+                "video.title": "KoTü in Action",
+                "video.toggle": "Watch Video"
+            },
+            tr: {
+                "nav.models": "Modeller",
+                "nav.features": "Özellikler",
+                "nav.howitworks": "Nasıl Çalışır",
+                "nav.testimonials": "Müşteri Yorumları",
+                "hero.title": "KoTü – Akıllı Gardırop",
+                "hero.subtitle": "Sizinle konuşan, tarzınızı bilen ve her durum için mükemmel kıyafetler öneren ilk yapay zeka destekli gardırop.",
+                "hero.button": "Modelleri Keşfet",
+                "products.title": "Modellerimiz",
+               "products.subtitle": "Ev için mükemmel KoTü modelini seçin",
+                "products.basic.title": "KoTü Basic",
+                "products.basic.description": "Akıllı gardırop dünyasına giriş",
+                "products.basic.feature1": "Yapay Zeka Danışmanlığı",
+                "products.basic.feature2": "Ses Kontrolü",
+                "products.basic.feature3": "Hava Durumu Analizi",
+                "products.vip.title": "KoTü VIP",
+                "products.vip.description": "Zorlu kullanıcılar için gelişmiş özellikler",
+                "products.vip.feature1": "Tüm Basic Özellikler",
+                "products.vip.feature2": "Takvim Entegrasyonu",
+                "products.vip.feature3": "Stil Analizi",
+                "products.vip.feature4": "Otomatik Envanter",
+                "products.premium.title": "KoTü Premium",
+                "products.premium.description": "Tüm özelliklerle ultimate deneyim",
+                "products.premium.feature1": "Tüm VIP Özellikler",
+                "products.premium.feature2": "Kişiselleştirilmiş Yapay Zeka",
+                "products.premium.feature3": "Premium Malzemeler",
+                "products.premium.feature4": "7/24 Premium Destek",
+                "products.premium.feature5": "5 Yıl Garanti",
+                "products.order": "Şimdi Sipariş Ver",
+                "features.title": "Devrimci Özellikler",
+                "features.subtitle": "KoTü'yü dünyanın en akıllı gardırobü yapan yenilikçi teknolojileri keşfedin",
+                "features.ki.title": "Yapay Zeka Destekli Danışmanlık",
+                "features.ki.description": "Yapay zekamız kıyafetlerinizi, tercihlerinizi ve hava durumunu analiz ederek mükemmel kıyafet önerileri sunar.",
+                "features.voice.title": "Ses Kontrolü",
+                "features.voice.description": "Gardırobünüzü ses komutlarıyla kolayca kontrol edin.",
+                "features.weather.title": "Hava Durumu Analizi",
+                "features.weather.description": "KoTü otomatik olarak hava durumunu kontrol eder ve uygun kıyafetler önerir.",
+                "features.style.title": "Stil Analizi",
+                "features.style.description": "Kameraya sahip ayna, mükemmel uyum için vücut ölçülerinizi analiz eder.",
+                "howitworks.title": "Nasıl Çalışır",
+                "howitworks.subtitle": "Mükemmel kıyafetinize ulaşmanın dört basit adımı",
+                "howitworks.step1.title": "Gardırobün önünde dur",
+                "howitworks.step1.description": "Aynanın önünde dur. Kamera sizi tanır ve selamlar.",
+                "howitworks.step2.title": "Yapay Zeka Analizi",
+                "howitworks.step2.description": "Yapay zeka kıyafetlerinizi, tercihlerinizi ve hava durumunu analiz eder.",
+                "howitworks.step3.title": "Kıyafet Önerileri",
+                "howitworks.step3.description": "KoTü size 3 mükemmel kıyafet önerisi sunar.",
+                "howitworks.step4.title": "Seç ve başla",
+                "howitworks.step4.description": "En sevdiğiniz kıyafeti seçin ve mükemmel giyinmiş şekilde güne başlayın.",
+                "testimonials.title": "Müşteri Yorumları",
+                "testimonials.subtitle": "Memnun KoTü kullanıcılarının deneyimleri",
+                "testimonials.testimonial1.text": "KoTü hayatımı değiştirdi! Sabahları çok zaman kazanıyorum ve her zaman mükemmel görünüyorum.",
+                "testimonials.testimonial1.name": "Sarah Müller",
+                "testimonials.testimonial1.location": "Berlin",
+                "testimonials.testimonial2.text": "Bir iş adamı olarak her zaman uygun giyinmem gerekiyor. KoTü her zaman doğru kıyafeti öneriyor.",
+                "testimonials.testimonial2.name": "Thomas Wagner",
+                "testimonials.testimonial2.location": "Münih",
+                "testimonials.testimonial3.text": "Hava durumu özelliği bir oyun değiştirici! Bir daha asla ince veya kalın giyinmeyeceğim.",
+                "testimonials.testimonial3.name": "Julia Meyer",
+                "testimonials.testimonial3.location": "Hamburg",
+                "cta.title": "Akıllı gardırobünüz için hazır mısınız?",
+                "cta.subtitle": "KoTü'yü keşfedin ve kıyafet seçiminin geleceğini deneyimleyin. Zaman kazanın und her zaman mükemmel görünün.",
+                "cta.button": "Şimdi Sipariş Ver",
+                "footer.about.title": "KoTü",
+                "footer.about.description": "Sizinle konuşan ve her zaman mükemmel giyinmenize yardımcı olan akıllı gardırop.",
+                "footer.links.title": "Hızlı Bağlantılar",
+                "footer.contact.title": "İletişim",
+                "footer.contact.address": "Berlin, Almanya",
+                "footer.copyright": "© 2023 KoTü. Tüm hakları saklıdır.",
+                "confirmation.title": "Sipariş başarılı!",
+                "confirmation.text": "KoTü'den siparişiniz için teşekkür ederiz. 24 saat içinde sizinle iletişime geçeceğiz.",
+                "close": "Kapat",
+                "video.title": "KoTü Aksiyonda",
+                "video.toggle": "Video İzle"
+            }
+        };
+
+        // Sprachumschalter Funktion
+        document.addEventListener('DOMContentLoaded', function() {
+            const languageLinks = document.querySelectorAll('.language-dropdown a');
+            const languageBtn = document.querySelector('.language-btn');
+            const languageSwitcher = document.getElementById('languageSwitcher');
+            const currentLangSpan = document.getElementById('currentLang');
+            
+            // Standardmäßig Deutsch setzen
+            let currentLanguage = localStorage.getItem('selectedLanguage') || 'de';
+            
+            // Seite in der gespeicherten Sprache laden
+            setLanguage(currentLanguage);
+
+            // Sprachendropdown öffnen/schließen
+            languageBtn.addEventListener('click', function(e) {
+                e.stopPropagation();
+                languageSwitcher.classList.toggle('active');
+            });
+            
+            // Sprachendropdown schließen, wenn außerhalb geklickt wird
+            document.addEventListener('click', function() {
+                languageSwitcher.classList.remove('active');
+            });
+            
+            // Sprachwechsel Event-Listener
+            languageLinks.forEach(link => {
+                link.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    const lang = this.getAttribute('data-lang');
+                    
+                    // Sprache setzen
+                    setLanguage(lang);
+                    
+                    // Dropdown automatisch schließen
+                    languageSwitcher.classList.remove('active');
+                });
+            });
+            
+            function setLanguage(lang) {
+                // Aktive Klasse setzen
+                languageLinks.forEach(l => l.classList.remove('active'));
+                document.querySelector(`.language-dropdown a[data-lang="${lang}"]`).classList.add('active');
+                
+                // Button-Text aktualisieren
+                if (lang === 'de') {
+                    currentLangSpan.textContent = 'DE';
+                } else if (lang === 'en') {
+                    currentLangSpan.textContent = 'EN';
+                } else if (lang === 'tr') {
+                    currentLangSpan.textContent = 'TR';
+                }
+                
+                // Alle Elemente mit data-i18n Attribut übersetzen
+                document.querySelectorAll('[data-i18n]').forEach(element => {
+                    const key = element.getAttribute('data-i18n');
+                    if (translations[lang] && translations[lang][key]) {
+                        element.textContent = translations[lang][key];
+                    }
+                });
+                
+                // Bestätigungsnachricht übersetzen
+                document.getElementById('confirmationTitle').textContent = translations[lang]['confirmation.title'];
+                document.getElementById('confirmationText').textContent = translations[lang]['confirmation.text'];
+                document.getElementById('closeConfirmation').textContent = translations[lang]['close'];
+                
+                // Sprache im Local Storage speichern
+                localStorage.setItem('selectedLanguage', lang);
+                
+                // HTML lang Attribut setzen für SEO und Accessibility
+                document.documentElement.lang = lang;
+            }
+            
+            // Smooth Scroll für Navigation
+            document.querySelectorAll('nav a, .btn').forEach(anchor => {
+                anchor.addEventListener('click', function(e) {
+                    if (this.getAttribute('href') && this.getAttribute('href').startsWith('#')) {
+                        e.preventDefault();
+                        const targetId = this.getAttribute('href');
+                        if(targetId !== '#') {
+                            document.querySelector(targetId).scrollIntoView({
+                                behavior: 'smooth'
+                            });
+                        }
+                    }
+                });
+            });
+            
+            // Animationen für Elemente
+            const animatedElements = document.querySelectorAll('.feature, .step, .product-card, .testimonial');
+            
+            const observer = new IntersectionObserver(function(entries) {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.style.opacity = '1';
+                        entry.target.style.transform = 'translateY(0)';
+                    }
+                });
+            }, { threshold: 0.1 });
+            
+            animatedElements.forEach(element => {
+                element.style.opacity = '0';
+                element.style.transform = 'translateY(20px)';
+                element.style.transition = 'opacity 0.5s ease, transform 0.5s ease';
+                observer.observe(element);
+            });
+            
+            // Bestell-Button Funktion
+            const orderButtons = document.querySelectorAll('.order-btn');
+            const confirmationMessage = document.getElementById('confirmationMessage');
+            const overlay = document.getElementById('overlay');
+            const closeConfirmation = document.getElementById('closeConfirmation');
+            
+            orderButtons.forEach(button => {
+                button.addEventListener('click', function() {
+                    const model = this.getAttribute('data-model');
+                    const currentLang = localStorage.getItem('selectedLanguage') || 'de';
+                    confirmationMessage.querySelector('h3').textContent = `${model} ${translations[currentLang]['confirmation.title']}`;
+                    confirmationMessage.style.display = 'block';
+                    overlay.style.display = 'block';
+                });
+            });
+            
+            closeConfirmation.addEventListener('click', function() {
+                confirmationMessage.style.display = 'none';
+                overlay.style.display = 'none';
+            });
+            
+            overlay.addEventListener('click', function() {
+                confirmationMessage.style.display = 'none';
+                overlay.style.display = 'none';
+            });
+            
+            // Werbevideo Funktionalität
+            const videoAdContainer = document.getElementById('videoAdContainer');
+            const videoToggleBtn = document.getElementById('videoToggleBtn');
+            const closeVideoBtn = document.getElementById('closeVideoBtn');
+            const adVideo = document.getElementById('adVideo');
+            const playPauseBtn = document.getElementById('playPauseBtn');
+            const muteUnmuteBtn = document.getElementById('muteUnmuteBtn');
+            const playIcon = document.getElementById('playIcon');
+            const pauseIcon = document.getElementById('pauseIcon');
+            const volumeIcon = document.getElementById('volumeIcon');
+            const muteIcon = document.getElementById('muteIcon');
+            
+            // Video automatisch nach 5 Sekunden anzeigen
+            setTimeout(() => {
+                if (!localStorage.getItem('videoClosed')) {
+                    videoAdContainer.classList.add('show');
+                    adVideo.play();
+                    playIcon.style.display = 'none';
+                    pauseIcon.style.display = 'inline-block';
+                }
+            }, 5000);
+            
+            // Video ein-/ausblenden
+            videoToggleBtn.addEventListener('click', function() {
+                videoAdContainer.classList.toggle('show');
+                // Video automatisch abspielen, wenn es angezeigt wird
+                if (videoAdContainer.classList.contains('show')) {
+                    adVideo.play();
+                    playIcon.style.display = 'none';
+                    pauseIcon.style.display = 'inline-block';
+                } else {
+                    adVideo.pause();
+                }
+            });
+            
+            // Video schließen
+            closeVideoBtn.addEventListener('click', function() {
+                videoAdContainer.classList.remove('show');
+                adVideo.pause();
+                // Speichern, dass der Benutzer das Video geschlossen hat (für 24 Stunden)
+                localStorage.setItem('videoClosed', 'true');
+                setTimeout(() => {
+                    localStorage.removeItem('videoClosed');
+                }, 24 * 60 * 60 * 1000); // 24 Stunden
+            });
+            
+            // Play/Pause Steuerung
+            playPauseBtn.addEventListener('click', function() {
+                if (adVideo.paused) {
+                    adVideo.play();
+                    playIcon.style.display = 'none';
+                    pauseIcon.style.display = 'inline-block';
+                } else {
+                    adVideo.pause();
+                    playIcon.style.display = 'inline-block';
+                    pauseIcon.style.display = 'none';
+                }
+            });
+            
+            // Stummschaltung Steuerung
+            muteUnmuteBtn.addEventListener('click', function() {
+                if (adVideo.muted) {
+                    adVideo.muted = false;
+                    volumeIcon.style.display = 'inline-block';
+                    muteIcon.style.display = 'none';
+                } else {
+                    adVideo.muted = true;
+                    volumeIcon.style.display = 'none';
+                    muteIcon.style.display = 'inline-block';
+                }
+            });
+            
+            // Video Status überwachen
+            adVideo.addEventListener('play', function() {
+                playIcon.style.display = 'none';
+                pauseIcon.style.display = 'inline-block';
+            });
+            
+            adVideo.addEventListener('pause', function() {
+                playIcon.style.display = 'inline-block';
+                pauseIcon.style.display = 'none';
+            });
+            
+            adVideo.addEventListener('ended', function() {
+                // Video von vorne starten, wenn es endet
+                adVideo.currentTime = 0;
+                adVideo.play();
+            });
+            
+            // Video schließen, wenn außerhalb geklickt wird
+            document.addEventListener('click', function(event) {
+                if (!videoAdContainer.contains(event.target) && 
+                    !videoToggleBtn.contains(event.target) && 
+                    videoAdContainer.classList.contains('show')) {
+                    videoAdContainer.classList.remove('show');
+                    adVideo.pause();
+                }
+            });
+        });
+    </script>
+</body>
+</html>
